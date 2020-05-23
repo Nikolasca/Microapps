@@ -35,7 +35,7 @@ jobs:
           command: |
             
             kubectl delete --all deployments
-            kubectl -f https://raw.githubusercontent.com/Nikolasca/prueba/master/deployment.yaml
+            kubectl apply -f https://raw.githubusercontent.com/Nikolasca/prueba/master/deployment.yaml
   Produ:
     docker:
       - image: google/cloud-sdk
