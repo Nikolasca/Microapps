@@ -1,13 +1,13 @@
 version: 2
 jobs:
-  Development:
+  dev:
     docker:
       - image: google/cloud-sdk
     environment:
-      - PROJECT_NAME: "Parcial-Infra"
-      - GOOGLE_PROJECT_ID: "parcial-infra"
-      - GOOGLE_COMPUTE_ZONE: "us-central1-c"
-      - GOOGLE_CLUSTER_NAME: "development"
+      - PROJECT_NAME: "ParcialInfra"
+      - GOOGLE_PROJECT_ID: "parcialinfra"
+      - GOOGLE_COMPUTE_ZONE: "us-central1-c	"
+      - GOOGLE_CLUSTER_NAME: "dev"
     steps:
       - checkout
       - run: 
@@ -23,27 +23,28 @@ jobs:
       - run: 
           name: Build Docker Images
           command: |
-            docker login -u="sockshead" -p="Yosoyjcpa16."
+            docker login -u="nikcarp" -p="Nikolas1998."
             cd ${HOME}/project/nodejs-app
-            docker build -t sockshead/node-app .
-            docker push sockshead/node-app
+            docker build -t nikcarp/node-app .
+            docker push nikcarp/node-app
             cd ../react-app/my-react-app
-            docker build -t sockshead/react-app .
-            docker push sockshead/react-app
+            docker build -t nikcarp/react-app .
+            docker push nikcarp/react-app
       - run: 
           name: Deploy to Kubernetes
           command: |
-            ls
-            kubectl apply
-  Production:
+            
+            kubectl delete --all deployments
+            kubectl -f https://raw.githubusercontent.com/Nikolasca/prueba/master/deployment.yaml
+  Produ:
     docker:
       - image: google/cloud-sdk
     environment:
-      - PROJECT_NAME: "Parcial-Infra"
-      - GOOGLE_PROJECT_ID: "parcial-infra"
+      - PROJECT_NAME: "ParcialInfra"
+      - GOOGLE_PROJECT_ID: "parcialinfra"
       - GOOGLE_COMPUTE_ZONE: "us-central1-c"
-      - GOOGLE_CLUSTER_NAME: "production"
-    steps:
+      - GOOGLE_CLUSTER_NAME: "produ"
+    steps:  
       - checkout
       - run: 
           name: Setup Google Cloud SDK
@@ -58,25 +59,23 @@ jobs:
       - run: 
           name: Deploy to Kubernetes
           command: |
-            kubectl delete all --all
-            kubectl apply -f ${HOME}/project/deployment.yaml
-            kubectl apply -f ${HOME}/project/service.yaml
-            kubectl apply -f ${HOME}/project/ingress.yaml
+            kubectl delete --all deployments
+            kubectl -f https://raw.githubusercontent.com/Nikolasca/prueba/master/deployment.yaml
 workflows:
   version: 2
   build:
     jobs:
-      - Development:
+      - dev:
           filters:
             branches:
               only: master
-      - Manual-Approval:
+      - A-Manual:
           type: approval
           requires:
-            - Development
-      - Production:
+            - dev
+      - Produ:
           requires:
-            - Manual-Approval
+            - A-Manual
           filters:
             branches:
-              only: master            
+              only: master             
