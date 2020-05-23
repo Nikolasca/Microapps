@@ -60,7 +60,7 @@ jobs:
           name: Deploy to Kubernetes
           command: |
             kubectl delete --all deployments
-            kubectl -f https://raw.githubusercontent.com/Nikolasca/prueba/master/deployment.yaml
+            kubectl apply -f https://raw.githubusercontent.com/Nikolasca/prueba/master/deployment.yaml
 workflows:
   version: 2
   build:
